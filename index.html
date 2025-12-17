@@ -3,9 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <title>Finmate</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Hola Finmate</h1>
-  <p>Mi primer proyecto web</p>
+    <div class="container">
+    <h1>Finmate</h1>
+    <p>Panel de control del asistente de WhatsApp</p>
+    <div class="cards">
+  <div class="card">
+    <h2>Estado</h2>
+    <p id="bot-status">Bot: Desconectado</p>
+  </div>
+
+  <div class="card">
+    <h2>Mensajes</h2>
+    <p id="msg-today">Hoy: 0</p>
+  </div>
+
+  <div class="card">
+    <h2>Acciones</h2>
+    <button id="connect-btn">Conectar bot</button>
+    <p id="connect-hint">Aún no conectado</p>
+  </div>
+</div>
+
+    </div>
+    <script src="app.js"></script>
 </body>
 </html>
