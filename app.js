@@ -1,19 +1,30 @@
+const API_BASE = "https://finmate-b6qg.onrender.com";
+
+
 const botStatus = document.getElementById("bot-status");
-
-setTimeout(() => {
-  botStatus.textContent = "Bot: Conectado ✅";
-}, 1500);
 const msgToday = document.getElementById("msg-today");
-
-let count = 0;
-setInterval(() => {
-  count += 1;
-  msgToday.textContent = `Hoy: ${count}`;
-}, 1000);
 const connectBtn = document.getElementById("connect-btn");
 const connectHint = document.getElementById("connect-hint");
 
-connectBtn.addEventListener("click", () => {
-  botStatus.textContent = "Bot: Conectado ✅";
-  connectHint.textContent = "Conectado desde la web ✅";
+async function cargarEstado() {
+  const res = await fetch(`${API_BASE}/api/status`);
+  const data = await res.json();
+
+  botStatus.textContent = `Bot: ${data.bot}`;
+  msgToday.textContent = `Hoy: ${data.msgToday}`;
+}
+
+connectBtn.addEventListener("click", async () => {
+  connectHint.textContent = "Conectando...";
+
+  const res = await fetch(`${API_BASE}/api/connect`, {
+    method: "POST",
+  });
+  const data = await res.json();
+
+  botStatus.textContent = `Bot: ${data.bot}`;
+  connectHint.textContent = "Conectado desde el backend ✅";
 });
+
+cargarEstado();
+setInterval(cargarEstado, 1000);
