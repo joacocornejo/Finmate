@@ -1,0 +1,42 @@
+# Environment
+.env
+*.env
+
+# Archivos con credenciales/secrets en texto plano — no subir a GitHub
+RESUMEN_CONVERSACION.md
+DEPLOY_GUIDE.md
+
+# Temporales de Office/LibreOffice
+*.tmp
+.~lock.*
+
+# Google credentials
+credentials.json
+token.json
+
+# State
+alert_state.json
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+
+# Virtual env
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

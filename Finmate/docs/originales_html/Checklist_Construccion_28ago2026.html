@@ -1,0 +1,336 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found]){display:none!important}</style></head><body>
+<title>Checklist Finmate</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root {
+    --paper: #f3f4ef; --paper-raised: #ffffff; --ink: #16231f; --ink-soft: #4b564f; --ink-faint: #7c8579;
+    --line: #d8dbd1; --accent: #2f6f5e; --accent-ink: #1f4c40; --accent-soft: #e4eee9;
+    --gold: #a97a24; --gold-soft: #f2e8d3; --up: #2f8f5b; --down: #b8453b;
+    --shadow: 0 1px 2px rgba(22,35,31,0.06), 0 8px 24px -12px rgba(22,35,31,0.12);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #111613; --paper-raised: #1a211d; --ink: #e9eae3; --ink-soft: #aab3ac; --ink-faint: #7c8579;
+      --line: #2b332e; --accent: #56b193; --accent-ink: #8fd2ba; --accent-soft: #1c2925;
+      --gold: #d9ab52; --gold-soft: #2a2417; --up: #57bd85; --down: #e0796e;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #111613; --paper-raised: #1a211d; --ink: #e9eae3; --ink-soft: #aab3ac; --ink-faint: #7c8579;
+    --line: #2b332e; --accent: #56b193; --accent-ink: #8fd2ba; --accent-soft: #1c2925;
+    --gold: #d9ab52; --gold-soft: #2a2417; --up: #57bd85; --down: #e0796e;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: 'Source Sans 3', system-ui, sans-serif; font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  ::selection { background: var(--accent-soft); color: var(--accent-ink); }
+  .page { max-width: 880px; margin: 0 auto; padding: 60px 26px 120px; }
+
+  .eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 600; display: flex; align-items: center; gap: 10px; }
+  .eyebrow::before { content: ""; width: 18px; height: 1px; background: var(--accent); }
+  h1 { font-family: 'Fraunces', serif; font-weight: 600; font-size: clamp(2rem, 4.4vw, 2.9rem); line-height: 1.08; letter-spacing: -0.01em; margin: 14px 0 10px; text-wrap: balance; }
+  .subtitle { font-size: 1.08rem; color: var(--ink-soft); max-width: 62ch; margin: 0 0 24px; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 10px 22px; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--ink-faint); padding-top: 20px; border-top: 1px solid var(--line); }
+  .meta-row span b { color: var(--ink-soft); font-weight: 600; }
+
+  /* progreso general */
+  .overview { margin-top: 32px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  @media (max-width: 620px) { .overview { grid-template-columns: repeat(2, 1fr); } }
+  .phase-chip { background: var(--paper-raised); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; box-shadow: var(--shadow); }
+  .phase-chip .pn { font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; color: var(--ink-faint); }
+  .phase-chip .pt { font-size: 12.5px; font-weight: 600; margin-top: 2px; }
+  .phase-chip .ps { font-family: 'IBM Plex Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; margin-top: 5px; display: inline-block; padding: 2px 6px; border-radius: 4px; }
+  .phase-chip.current { border-color: var(--gold); }
+  .phase-chip.current .ps { background: var(--gold-soft); color: var(--gold); }
+  .phase-chip.pending .ps { background: var(--paper); color: var(--ink-faint); }
+  .phase-chip.done .ps { background: var(--accent-soft); color: var(--accent-ink); }
+
+  section { margin-top: 60px; scroll-margin-top: 24px; }
+  .phase-head { display: flex; align-items: baseline; justify-content: space-between; gap: 14px; margin-bottom: 6px; flex-wrap: wrap; }
+  .phase-head-left { display: flex; align-items: baseline; gap: 14px; }
+  .section-num { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--gold); background: var(--gold-soft); border-radius: 4px; padding: 3px 8px; font-weight: 600; flex-shrink: 0; }
+  h2 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.4rem; margin: 0; letter-spacing: -0.005em; }
+  .phase-status { font-family: 'IBM Plex Mono', monospace; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; padding: 3px 9px; border-radius: 100px; }
+  .phase-status.current { background: var(--gold-soft); color: var(--gold); }
+  .phase-status.pending { background: var(--paper-raised); color: var(--ink-faint); border: 1px solid var(--line); }
+  .phase-goal { color: var(--ink-soft); max-width: 68ch; margin: 6px 0 20px; font-size: 14.5px; }
+
+  .steps-card { background: var(--paper-raised); border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--shadow); padding: 6px 22px; }
+
+  .step-item { display: flex; gap: 13px; padding: 13px 0; border-bottom: 1px solid var(--line); }
+  .step-item:last-child { border-bottom: none; }
+  .step-icon { width: 22px; height: 22px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; margin-top: 1px; }
+  .step-item.done .step-icon { background: var(--accent); color: #fff; }
+  .step-item.current .step-icon { background: var(--gold); color: #fff; }
+  .step-item.pending .step-icon { border: 1.5px solid var(--line); color: transparent; }
+  .step-text b { font-weight: 600; }
+  .step-item.done .step-text { color: var(--ink-soft); }
+  .step-item.done .step-text b { color: var(--ink); }
+  .step-tag { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.05em; padding: 1px 6px; border-radius: 4px; margin-left: 7px; vertical-align: 1px; }
+  .step-item.done .step-tag { background: var(--accent-soft); color: var(--accent-ink); }
+  .step-item.current .step-tag { background: var(--gold-soft); color: var(--gold); }
+
+  .verify { display: flex; gap: 13px; margin: 2px 0 13px 35px; padding: 11px 14px; background: var(--accent-soft); border-radius: 8px; border-left: 3px solid var(--accent); }
+  .verify .v-icon { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 700; color: var(--accent-ink); flex-shrink: 0; }
+  .verify .v-text { font-size: 13.5px; color: var(--accent-ink); }
+  .verify .v-text b { font-weight: 700; }
+  @media (max-width: 560px) { .verify { margin-left: 0; } }
+
+  code, .mono { font-family: 'IBM Plex Mono', monospace; font-size: 0.92em; background: var(--paper); border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; }
+
+  footer { margin-top: 90px; padding-top: 22px; border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-faint); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+</style>
+
+<div class="page">
+
+  <div class="eyebrow">Checklist de construcción — proyecto Finmate</div>
+  <h1>Guía paso a paso para construir el agente</h1>
+  <p class="subtitle">Cada paso complejo trae su propia verificación justo debajo — no se avanza al siguiente paso sin confirmar que el anterior funciona. Este documento se va actualizando a medida que completamos pasos.</p>
+  <div class="meta-row">
+    <span><b>Para:</b> Joaco</span>
+    <span><b>Fecha:</b> 28 agosto 2026</span>
+    <span><b>Estado actual:</b> Fase 0 en curso — código nuevo ya subido a <code>claudeheymate-code/finmate</code> (main), siguiente: cargar variables en Railway y revisar el deploy</span>
+  </div>
+
+  <div class="overview">
+    <div class="phase-chip current"><div class="pn">Fase 0</div><div class="pt">Cimientos</div><div class="ps">En curso</div></div>
+    <div class="phase-chip pending"><div class="pn">Fase 1</div><div class="pt">Memoria y personalidad</div><div class="ps">Pendiente</div></div>
+    <div class="phase-chip pending"><div class="pn">Fase 2</div><div class="pt">Mercados con contexto</div><div class="ps">Pendiente</div></div>
+    <div class="phase-chip pending"><div class="pn">Fase 3</div><div class="pt">Portafolio</div><div class="ps">Pendiente</div></div>
+    <div class="phase-chip pending"><div class="pn">Fase 4</div><div class="pt">Noticias y económicos</div><div class="ps">Pendiente</div></div>
+    <div class="phase-chip pending"><div class="pn">Fase 5</div><div class="pt">Finanzas personales</div><div class="ps">Pendiente</div></div>
+    <div class="phase-chip pending"><div class="pn">Fase 6</div><div class="pt">Control de ruido</div><div class="ps">Pendiente</div></div>
+    <div class="phase-chip pending"><div class="pn">Fase 7</div><div class="pt">Centro de Control</div><div class="ps">Pendiente</div></div>
+    <div class="phase-chip pending"><div class="pn">Fase 8</div><div class="pt">Hardening</div><div class="ps">Pendiente</div></div>
+  </div>
+
+  <!-- FASE 0 -->
+  <section id="f0">
+    <div class="phase-head">
+      <div class="phase-head-left"><span class="section-num">Fase 0</span><h2>Cimientos</h2></div>
+      <span class="phase-status current">En curso</span>
+    </div>
+    <p class="phase-goal">Objetivo: tener el patrón agente-con-memoria-y-tools funcionando de punta a punta con una sola función (mercados).</p>
+
+    <div class="steps-card">
+      <div class="step-item done">
+        <div class="step-icon">✓</div>
+        <div class="step-text"><b>Escribir y probar el código base</b> — orquestador con tool-calling, modelos de base de datos (<code>users</code>, <code>conversation_history</code>), cache sobre Redis, y el webhook adaptado.<span class="step-tag">hecho</span></div>
+      </div>
+    </div>
+    <div class="verify">
+      <div class="v-icon">✓</div>
+      <div class="v-text"><b>Verificación (ya hecha, en el sandbox):</b> la app arranca sin romperse aunque falten las credenciales; el loop de tool-calling funciona probado con un cliente simulado; el webhook devuelve TwiML válido; la capa de base de datos funciona de punta a punta contra una base de prueba.</div>
+    </div>
+
+    <div class="steps-card">
+      <div class="step-item done">
+        <div class="step-icon">✓</div>
+        <div class="step-text"><b>Iniciar sesión en Anthropic Console</b> (console.anthropic.com) — con Google, email o SSO.<span class="step-tag">hecho</span></div>
+      </div>
+      <div class="step-item done">
+        <div class="step-icon">✓</div>
+        <div class="step-text"><b>Generar la API key</b> desde el panel de Anthropic — nombre <code>finmate-railway</code>, sin expiración.<span class="step-tag">hecho</span></div>
+      </div>
+    </div>
+    <div class="verify">
+      <div class="v-icon">✓</div>
+      <div class="v-text"><b>Verificación:</b> la key generada empieza con <code>sk-ant-</code> y quedó copiada al portapapeles para pegarla en Railway — el panel de Anthropic no la vuelve a mostrar.</div>
+    </div>
+
+    <div class="steps-card">
+      <div class="step-item done"><div class="step-icon">✓</div><div class="step-text"><b>Crear cuenta en Neon</b> (neon.tech, login con Google) y un proyecto Postgres llamado <code>finmate</code>.<span class="step-tag">hecho</span></div></div>
+      <div class="step-item done"><div class="step-icon">✓</div><div class="step-text"><b>Copiar el connection string</b> que entrega Neon (con pooling activado) — copiado al portapapeles para pegar en Railway.<span class="step-tag">hecho</span></div></div>
+    </div>
+    <div class="verify">
+      <div class="v-icon">✓</div>
+      <div class="v-text"><b>Verificación:</b> el string tiene el formato <code>postgresql://usuario:password@host/db?sslmode=require</code> (el código ya normaliza el driver, no hace falta editarlo a mano). Falta pegarlo en Railway como <code>DATABASE_URL</code>.</div>
+    </div>
+
+    <div class="steps-card">
+      <div class="step-item done"><div class="step-icon">✓</div><div class="step-text"><b>Crear cuenta en Upstash</b> (upstash.com) y una base Redis llamada <code>finmate</code> (Free Tier, Ohio us-east-2, igual región que Neon).<span class="step-tag">hecho</span></div></div>
+      <div class="step-item done"><div class="step-icon">✓</div><div class="step-text"><b>Copiar la URL de Redis</b> que entrega Upstash (pestaña TCP) — copiada al portapapeles para pegar en Railway.<span class="step-tag">hecho</span></div></div>
+    </div>
+    <div class="verify">
+      <div class="v-icon">✓</div>
+      <div class="v-text"><b>Verificación:</b> el string empieza con <code>rediss://default:...@allowed-fowl-209388.upstash.io:6379</code>. Falta pegarlo en Railway como <code>REDIS_URL</code>.</div>
+    </div>
+
+    <div class="steps-card">
+      <div class="step-item current"><div class="step-icon">▶</div><div class="step-text"><b>Cargar las variables en Railway</b>: <code>DATABASE_URL</code>, <code>REDIS_URL</code>, <code>ANTHROPIC_API_KEY</code>.<span class="step-tag">en curso</span></div></div>
+    </div>
+    <div class="verify">
+      <div class="v-icon">✓</div>
+      <div class="v-text"><b>Verificación:</b> Railway muestra las tres variables guardadas, sin comillas ni espacios de más al principio/final.</div>
+    </div>
+
+    <div class="steps-card">
+      <div class="step-item done"><div class="step-icon">✓</div><div class="step-text"><b>Subir el código nuevo</b> al repo <code>claudeheymate-code/finmate</code> (branch <code>main</code>) — los 11 archivos de Fase 0 (orquestador, tools, webhook adaptado, modelos de base de datos, settings, requirements y .env.example) ya están commiteados directo en <code>main</code>.<span class="step-tag">hecho</span></div></div>
+    </div>
+    <div class="verify">
+      <div class="v-icon">✓</div>
+      <div class="v-text"><b>Verificación:</b> Railway detecta el commit nuevo y arranca un deploy automáticamente. <i>(Pendiente de confirmar en el panel de Railway — Claude no tiene acceso a esa cuenta.)</i></div>
+    </div>
+
+    <div class="steps-card">
+      <div class="step-item pending"><div class="step-icon"></div><div class="step-text"><b>Revisar los logs del deploy</b> en Railway.</div></div>
+    </div>
+    <div class="verify">
+      <div class="v-icon">✓</div>
+      <div class="v-text"><b>Verificación:</b> el log muestra <code>Base de datos inicializada</code> y no hay excepciones al arrancar. Si dice que falta <code>DATABASE_URL</code>, revisar el paso de variables.</div>
+    </div>
+
+    <div class="steps-card">
+      <div class="step-item pending"><div class="step-icon"></div><div class="step-text"><b>Probar "hola"</b> por WhatsApp.</div></div>
+      <div class="step-item pending"><div class="step-icon"></div><div class="step-text"><b>Probar "¿cómo están los mercados?"</b> por WhatsApp.</div></div>
+    </div>
+    <div class="verify">
+      <div class="v-icon">✓</div>
+      <div class="v-text"><b>Verificación (cierre de Fase 0):</b> la respuesta a "hola" ya no es el texto fijo de antes — viene generada por Claude. La respuesta de mercados incluye datos reales de índices, commodities y USD/CLP (confirma que la tool se ejecutó). En Neon, la tabla <code>conversation_history</code> tiene las 4 filas de esta prueba (2 mensajes + 2 respuestas).</div>
+    </div>
+  </section>
+
+  <!-- FASE 1 -->
+  <section id="f1">
+    <div class="phase-head"><div class="phase-head-left"><span class="section-num">Fase 1</span><h2>Memoria y personalidad</h2></div><span class="phase-status pending">Pendiente</span></div>
+    <p class="phase-goal">Objetivo: el agente recuerda la conversación y habla con un estilo propio, sin tocar la calidad del análisis.</p>
+    <div class="steps-card">
+      <div class="step-item pending"><div class="step-icon"></div><div class="step-text">Crear la tabla <code>personality_settings</code> (humor, sarcasmo, frecuencia de chistes, nivel conversador, tono) e insertar un registro de prueba.</div></div>
+    </div>
+    <div class="verify"><div class="v-icon">✓</div><div class="v-text"><b>Verificación:</b> se puede leer y escribir un registro en la tabla directamente desde Neon (consulta SQL simple).</div></div>
+    <div class="steps-card">
+      <div class="step-item pending"><div class="step-icon"></div><div class="step-text">Inyectar la personalidad dinámicamente en el <code>system prompt</code> del orquestador.</div></div>
+    </div>
+    <div class="verify"><div class="v-icon">✓</div><div class="v-text"><b>Verificación:</b> cambiar manualmente el valor de humor/sarcasmo en la base de datos y confirmar que el tono de la próxima respuesta en WhatsApp cambia — sin que baje el rigor de los datos.</div></div>
+    <div class="steps-card">
+      <div class="step-item pending"><div class="step-icon"></div><div class="step-text">Construir la versión mínima del Centro de Control (login + perfil + personalidad), con el stack económico elegido (Flask extendido).</div></div>
+    </div>
+    <div class="verify"><div class="v-icon">✓</div><div class="v-text"><b>Verificación de cierre de Fase 1:</b> loguearse en el panel, cambiar la personalidad ahí (no en la base a mano), y confirmar que el cambio se refleja en la próxima respuesta de WhatsApp.</div></div>
+  </section>
+
+  <!-- FASE 2 -->
+  <section id="f2">
+    <div class="phase-head"><div class="phase-head-left"><span class="section-num">Fase 2</span><h2>Mercados con contexto</h2></div><span class="phase-status pending">Pendiente</span></div>
+    <p class="phase-goal">Objetivo: actualizaciones automáticas en apertura/cierre que explican el "por qué", no solo el número.</p>
+    <div class="steps-card">
+      <div class="step-item pending"><div class="step-icon"></div><div class="step-text">Iniciar el trámite de <b>plantillas de WhatsApp Business</b> (Twilio + Meta) si no se hizo en la Fase 0 — tarda días en aprobarse, conviene arrancarlo ya.</div></div>
+    </div>
+    <div class="verify"><div class="v-icon">✓</div><div class="v-text"><b>Verificación:</b> Meta aprueba al menos una plantilla de prueba (visible como "Approved" en el panel de Twilio Content).</div></div>
+    <div class="steps-card">
+      <div class="step-item pending"><div class="step-icon"></div><div class="step-text">Integrar el proveedor de cotizaciones extendido elegido (acciones puntuales, no solo índices).</div></div>
+    </div>
+    <div class="verify"><div class="v-icon">✓</div><div class="v-text"><b>Verificación:</b> preguntar por un ticker puntual (ej. "cómo está Apple") y recibir un precio real, no solo los índices fijos de antes.</div></div>
+    <div class="steps-card">
+      <div class="step-item pending"><div class="step-icon"></div><div class="step-text">Crear <code>watchlist_items</code> y su tool de alta/baja desde el chat.</div></div>
+    </div>
+    <div class="verify"><div class="v-icon">✓</div><div class="v-text"><b>Verificación:</b> agregar un ticker por chat y confirmar que aparece guardado en la tabla.</div></div>
+    <div class="steps-card">
+      <div class="step-item pending"><div class="step-icon"></div><div class="step-text">Implementar el scheduler proactivo con triggers de apertura/cierre por timezone y horario configurado.</div></div>
+    </div>
+    <div class="verify"><div class="v-icon">✓</div><div class="v-text"><b>Verificación:</b> forzar un trigger de prueba (cron a "en 2 minutos") y confirmar que llega el mensaje proactivo por WhatsApp usando la plantilla aprobada, sin que el usuario haya escrito antes.</div></div>
+    <div class="steps-card">
+      <div class="step-item pending"><div class="step-icon"></div><div class="step-text">Tool "explicar movimiento" — cruza precio + variación + noticia relacionada.</div></div>
+    </div>
+    <div class="verify"><div class="v-icon">✓</div><div class="v-text"><b>Verificación de cierre de Fase 2:</b> preguntar "¿por qué se movió tanto el Nasdaq hoy?" y confirmar que la respuesta conecta el número con una noticia real, no solo el dato aislado.</div></div>
+  </section>
+
+  <!-- FASE 3 -->
+  <section id="f3">
+    <div class="phase-head"><div class="phase-head-left"><span class="section-num">Fase 3</span><h2>Portafolio</h2></div><span class="phase-status pending">Pendiente</span></div>
+    <p class="phase-goal">Objetivo: análisis siempre anclado a las posiciones reales del usuario, nunca genérico.</p>
+    <div class="steps-card">
+      <div class="step-item pending"><div class="step-icon"></div><div class="step-text">Crear <code>portfolio_holdings</code> y las tools de alta/edición/baja de posiciones vía chat.</div></div>
+    </div>
+    <div class="verify"><div class="v-icon">✓</div><div class="v-text"><b>Verificación:</b> cargar una posición de prueba (activo, cantidad, precio, fecha) y verla reflejada correctamente en la base de datos.</div></div>
+    <div class="steps-card">
+      <div class="step-item pending"><div class="step-icon"></div><div class="step-text">Cálculo de valor actual, rentabilidad absoluta/%, P&L por posición y total, distribución.</div></div>
+    </div>
+    <div class="verify"><div class="v-icon">✓</div><div class="v-text"><b>Verificación:</b> comparar el resumen que da el agente contra un cálculo hecho a mano (Excel/calculadora) con los mismos números — deben coincidir.</div></div>
+    <div class="steps-card">
+      <div class="step-item pending"><div class="step-icon"></div><div class="step-text">Cruzar el portafolio cargado con noticias relevantes y riesgos/oportunidades, usando el LLM con el portafolio como contexto obligatorio.</div></div>
+    </div>
+    <div class="verify"><div class="v-icon">✓</div><div class="v-text"><b>Verificación de cierre de Fase 3:</b> preguntar "¿qué riesgos tiene mi portafolio?" y confirmar que la respuesta menciona los activos reales cargados, no una respuesta genérica de mercado.</div></div>
+  </section>
+
+  <!-- FASE 4 -->
+  <section id="f4">
+    <div class="phase-head"><div class="phase-head-left"><span class="section-num">Fase 4</span><h2>Noticias y datos económicos</h2></div><span class="phase-status pending">Pendiente</span></div>
+    <p class="phase-goal">Objetivo: pre-aviso y post-publicación de datos económicos, resúmenes personalizados.</p>
+    <div class="steps-card">
+      <div class="step-item pending"><div class="step-icon"></div><div class="step-text">Crear <code>news_topics_followed</code> y <code>economic_indicators_followed</code>, y su edición vía chat o panel.</div></div>
+    </div>
+    <div class="verify"><div class="v-icon">✓</div><div class="v-text"><b>Verificación:</b> decirle al agente "seguime las noticias de bancos regionales" y confirmar que queda guardado.</div></div>
+    <div class="steps-card">
+      <div class="step-item pending"><div class="step-icon"></div><div class="step-text">Integrar el calendario económico elegido (consenso + dato anterior).</div></div>
+    </div>
+    <div class="verify"><div class="v-icon">✓</div><div class="v-text"><b>Verificación:</b> preguntar "qué dato importante viene esta semana" y comparar contra una fuente externa conocida (ej. calendario público de la Fed).</div></div>
+    <div class="steps-card">
+      <div class="step-item pending"><div class="step-icon"></div><div class="step-text">Pre-aviso y post-publicación automáticos con comparación e interpretación.</div></div>
+    </div>
+    <div class="verify"><div class="v-icon">✓</div><div class="v-text"><b>Verificación:</b> esperar o simular una publicación real y confirmar que llegan las dos alertas (antes y después) con el formato pedido (dato, consenso, interpretación, impacto).</div></div>
+    <div class="steps-card">
+      <div class="step-item pending"><div class="step-icon"></div><div class="step-text">Resúmenes diarios/semanales personalizados.</div></div>
+    </div>
+    <div class="verify"><div class="v-icon">✓</div><div class="v-text"><b>Verificación de cierre de Fase 4:</b> forzar el envío de un resumen y confirmar que solo incluye los temas que el usuario efectivamente sigue, no todo lo que pasó en el mundo.</div></div>
+  </section>
+
+  <!-- FASE 5 -->
+  <section id="f5">
+    <div class="phase-head"><div class="phase-head-left"><span class="section-num">Fase 5</span><h2>Finanzas personales</h2></div><span class="phase-status pending">Pendiente</span></div>
+    <p class="phase-goal">Objetivo: registrar gastos hablando normal, y ver el mes de un vistazo al preguntar.</p>
+    <div class="steps-card">
+      <div class="step-item pending"><div class="step-icon"></div><div class="step-text">Crear <code>transactions</code> y <code>budget_categories</code> con el set inicial de categorías.</div></div>
+      <div class="step-item pending"><div class="step-icon"></div><div class="step-text">Extracción estructurada de gasto (monto, fecha, descripción, categoría) desde lenguaje natural.</div></div>
+    </div>
+    <div class="verify"><div class="v-icon">✓</div><div class="v-text"><b>Verificación:</b> mandar 5 gastos escritos de formas distintas ("gasté 8 lucas en el almuerzo", "uber 5.500", etc.) y confirmar que los 5 quedan bien categorizados en la base.</div></div>
+    <div class="steps-card">
+      <div class="step-item pending"><div class="step-icon"></div><div class="step-text">Resumen mensual automático y consulta on-demand del gasto acumulado.</div></div>
+    </div>
+    <div class="verify"><div class="v-icon">✓</div><div class="v-text"><b>Verificación de cierre de Fase 5:</b> comparar el resumen generado contra una suma manual de los gastos cargados en la prueba anterior.</div></div>
+  </section>
+
+  <!-- FASE 6 -->
+  <section id="f6">
+    <div class="phase-head"><div class="phase-head-left"><span class="section-num">Fase 6</span><h2>Control de ruido</h2></div><span class="phase-status pending">Pendiente</span></div>
+    <p class="phase-goal">Objetivo: que el agente avise lo importante, no todo.</p>
+    <div class="steps-card">
+      <div class="step-item pending"><div class="step-icon"></div><div class="step-text">Crear <code>alerts_log</code> y el umbral de materialidad configurable.</div></div>
+    </div>
+    <div class="verify"><div class="v-icon">✓</div><div class="v-text"><b>Verificación de cierre de Fase 6:</b> provocar dos veces la misma condición de alerta (ej. la misma variación de precio) y confirmar que no llega duplicada.</div></div>
+  </section>
+
+  <!-- FASE 7 -->
+  <section id="f7">
+    <div class="phase-head"><div class="phase-head-left"><span class="section-num">Fase 7</span><h2>Centro de Control completo</h2></div><span class="phase-status pending">Pendiente</span></div>
+    <p class="phase-goal">Objetivo: administrar todo el agente sin tocar la base de datos a mano.</p>
+    <div class="steps-card">
+      <div class="step-item pending"><div class="step-icon"></div><div class="step-text">Agregar al panel los módulos restantes: horarios, noticias, indicadores, mercados seguidos, portafolio, finanzas personales, preferencias de reportes.</div></div>
+    </div>
+    <div class="verify"><div class="v-icon">✓</div><div class="v-text"><b>Verificación de cierre de Fase 7:</b> probar al menos un cambio por módulo desde el panel y confirmar que se refleja de inmediato en el comportamiento del bot por WhatsApp.</div></div>
+  </section>
+
+  <!-- FASE 8 -->
+  <section id="f8">
+    <div class="phase-head"><div class="phase-head-left"><span class="section-num">Fase 8</span><h2>Hardening y uso real</h2></div><span class="phase-status pending">Pendiente</span></div>
+    <p class="phase-goal">Objetivo: que aguante el uso diario sin sorpresas.</p>
+    <div class="steps-card">
+      <div class="step-item pending"><div class="step-icon"></div><div class="step-text">Manejo de errores robusto, logging/observabilidad de envíos proactivos, aislamiento de datos por usuario.</div></div>
+    </div>
+    <div class="verify"><div class="v-icon">✓</div><div class="v-text"><b>Verificación:</b> simular la caída de una API externa (ej. cortar internet a Finnhub con una key inválida) y confirmar que el bot responde con un mensaje claro en vez de romperse.</div></div>
+    <div class="steps-card">
+      <div class="step-item pending"><div class="step-icon"></div><div class="step-text">Semana de prueba con uso real y ajuste fino de prompts y umbrales de alerta.</div></div>
+    </div>
+    <div class="verify"><div class="v-icon">✓</div><div class="v-text"><b>Verificación final:</b> una semana completa de uso sin que el bot rompa, con las 4 funciones respondiendo con datos correctos.</div></div>
+  </section>
+
+  <footer>
+    <span>Finmate — checklist de construcción, vivo</span>
+    <span>Se actualiza a medida que completamos cada paso</span>
+  </footer>
+
+</div>
+
+</body></html>

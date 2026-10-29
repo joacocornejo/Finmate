@@ -1,0 +1,598 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}</style></head><body>
+<title>Finmate Agente</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  :root {
+    --paper: #f3f4ef;
+    --paper-raised: #ffffff;
+    --ink: #16231f;
+    --ink-soft: #4b564f;
+    --ink-faint: #7c8579;
+    --line: #d8dbd1;
+    --accent: #2f6f5e;
+    --accent-ink: #1f4c40;
+    --accent-soft: #e4eee9;
+    --gold: #a97a24;
+    --gold-soft: #f2e8d3;
+    --up: #2f8f5b;
+    --down: #b8453b;
+    --shadow: 0 1px 2px rgba(22,35,31,0.06), 0 8px 24px -12px rgba(22,35,31,0.12);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #111613; --paper-raised: #1a211d; --ink: #e9eae3; --ink-soft: #aab3ac;
+      --ink-faint: #7c8579; --line: #2b332e; --accent: #56b193; --accent-ink: #8fd2ba;
+      --accent-soft: #1c2925; --gold: #d9ab52; --gold-soft: #2a2417; --up: #57bd85; --down: #e0796e;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #111613; --paper-raised: #1a211d; --ink: #e9eae3; --ink-soft: #aab3ac;
+    --ink-faint: #7c8579; --line: #2b332e; --accent: #56b193; --accent-ink: #8fd2ba;
+    --accent-soft: #1c2925; --gold: #d9ab52; --gold-soft: #2a2417; --up: #57bd85; --down: #e0796e;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px -12px rgba(0,0,0,0.5);
+  }
+
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font-family: 'Source Sans 3', system-ui, -apple-system, sans-serif; font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  ::selection { background: var(--accent-soft); color: var(--accent-ink); }
+  .page { max-width: 900px; margin: 0 auto; padding: 64px 28px 120px; }
+
+  .eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-weight: 600; display: flex; align-items: center; gap: 10px; }
+  .eyebrow::before { content: ""; width: 18px; height: 1px; background: var(--accent); }
+  h1 { font-family: 'Fraunces', serif; font-weight: 600; font-size: clamp(2.2rem, 4.6vw, 3.2rem); line-height: 1.06; letter-spacing: -0.01em; margin: 14px 0 10px; text-wrap: balance; }
+  .subtitle { font-size: 1.1rem; color: var(--ink-soft); max-width: 58ch; text-wrap: balance; margin: 0 0 28px; }
+  .meta-row { display: flex; flex-wrap: wrap; gap: 10px 22px; font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--ink-faint); padding-top: 22px; border-top: 1px solid var(--line); }
+  .meta-row span b { color: var(--ink-soft); font-weight: 600; }
+
+  /* TOC */
+  .toc { margin-top: 40px; background: var(--paper-raised); border: 1px solid var(--line); border-radius: 10px; padding: 20px 24px; box-shadow: var(--shadow); }
+  .toc-title { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); margin-bottom: 12px; }
+  .toc ol { margin: 0; padding: 0; list-style: none; columns: 2; column-gap: 28px; }
+  .toc li { break-inside: avoid; margin-bottom: 8px; font-size: 14px; }
+  .toc a { color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid transparent; }
+  .toc a:hover { color: var(--accent-ink); border-bottom-color: var(--accent); }
+  .toc .n { font-family: 'IBM Plex Mono', monospace; color: var(--gold); margin-right: 6px; }
+  @media (max-width: 560px) { .toc ol { columns: 1; } }
+
+  section { margin-top: 76px; scroll-margin-top: 24px; }
+  .section-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 22px; }
+  .section-num { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--gold); background: var(--gold-soft); border-radius: 4px; padding: 3px 8px; font-weight: 600; flex-shrink: 0; }
+  h2 { font-family: 'Fraunces', serif; font-weight: 600; font-size: 1.5rem; margin: 0; letter-spacing: -0.005em; }
+  .section-intro { color: var(--ink-soft); max-width: 70ch; margin: -10px 0 26px; }
+  p { max-width: 72ch; }
+  code, .mono { font-family: 'IBM Plex Mono', monospace; }
+
+  .summary { background: var(--paper-raised); border: 1px solid var(--line); border-radius: 10px; padding: 26px 28px; box-shadow: var(--shadow); }
+  .summary p:last-child { margin-bottom: 0; }
+  .summary p { color: var(--ink-soft); max-width: none; }
+  .summary strong { color: var(--ink); font-weight: 600; }
+  .decision-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .chip { font-family: 'IBM Plex Mono', monospace; font-size: 12px; padding: 5px 10px; border-radius: 100px; background: var(--accent-soft); color: var(--accent-ink); border: 1px solid transparent; }
+
+  /* callout */
+  .callout { display: flex; gap: 14px; background: var(--gold-soft); border: 1px solid transparent; border-left: 3px solid var(--gold); border-radius: 8px; padding: 16px 20px; margin: 20px 0; }
+  .callout .icon { font-family: 'IBM Plex Mono', monospace; font-weight: 700; color: var(--gold); flex-shrink: 0; }
+  .callout p { margin: 0; font-size: 14.5px; color: var(--ink-soft); max-width: none; }
+  .callout p strong { color: var(--ink); }
+
+  /* group head inside a section */
+  .group-head { font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.07em; text-transform: uppercase; color: var(--ink-faint); margin: 34px 0 14px; padding-top: 6px; }
+  .group-head:first-of-type { margin-top: 0; }
+
+  /* recommendation cards */
+  .rec-card { background: var(--paper-raised); border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--shadow); overflow: hidden; margin-bottom: 16px; }
+  .rec-head { padding: 14px 20px; border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 10px; }
+  .rec-head .num { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--ink-faint); }
+  .rec-head h4 { font-family: 'Fraunces', serif; font-size: 1.05rem; font-weight: 600; margin: 0; }
+  .rec-options { display: grid; grid-template-columns: 1fr 1fr; }
+  .rec-option { padding: 16px 20px; }
+  .rec-option + .rec-option { border-left: 1px solid var(--line); }
+  .badge { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.06em; text-transform: uppercase; border-radius: 4px; padding: 3px 7px; font-weight: 600; }
+  .badge.best { background: var(--gold-soft); color: var(--gold); }
+  .badge.budget { background: var(--accent-soft); color: var(--accent-ink); }
+  .rec-option .pick { font-weight: 700; font-size: 14.5px; margin-top: 8px; }
+  .rec-option .why { font-size: 13.5px; color: var(--ink-soft); margin-top: 4px; }
+  .rec-option .cost { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink-faint); margin-top: 8px; }
+  @media (max-width: 620px) { .rec-options { grid-template-columns: 1fr; } .rec-option + .rec-option { border-left: none; border-top: 1px solid var(--line); } }
+
+  /* data model table */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; background: var(--paper-raised); box-shadow: var(--shadow); }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; min-width: 640px; }
+  th, td { text-align: left; padding: 11px 16px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  thead th { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint); font-weight: 600; background: var(--paper); }
+  tbody tr:last-child td { border-bottom: none; }
+  td.tbl-name { font-family: 'IBM Plex Mono', monospace; font-weight: 600; color: var(--accent-ink); white-space: nowrap; }
+  td .cols { color: var(--ink-soft); font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; }
+  td.tbl-func { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--ink-faint); white-space: nowrap; }
+
+  /* roadmap */
+  .roadmap { display: flex; flex-direction: column; }
+  .phase { display: grid; grid-template-columns: 96px 1fr; gap: 20px; position: relative; padding-bottom: 30px; }
+  .phase:last-child { padding-bottom: 0; }
+  .phase-marker { display: flex; flex-direction: column; align-items: center; }
+  .phase-dot { width: 34px; height: 34px; border-radius: 50%; background: var(--paper-raised); border: 1.5px solid var(--accent); color: var(--accent); font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .phase-line { width: 1.5px; flex: 1; background: var(--line); margin-top: 4px; }
+  .phase:last-child .phase-line { display: none; }
+  .phase-card { background: var(--paper-raised); border: 1px solid var(--line); border-radius: 10px; padding: 20px 24px; box-shadow: var(--shadow); }
+  .phase-card h4 { font-family: 'Fraunces', serif; font-size: 1.15rem; font-weight: 600; margin: 0 0 4px; }
+  .phase-card .obj { font-size: 14px; color: var(--ink-soft); margin: 0 0 14px; }
+  .phase-tag { display: inline-block; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--gold); background: var(--gold-soft); border-radius: 4px; padding: 2px 7px; margin-bottom: 8px; }
+  .phase-tasks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 7px; }
+  .phase-tasks li { display: flex; gap: 9px; font-size: 13.5px; color: var(--ink-soft); align-items: flex-start; }
+  .phase-tasks li::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); margin-top: 7px; flex-shrink: 0; }
+  .phase-tasks li b { color: var(--ink); font-weight: 600; }
+  @media (max-width: 560px) { .phase { grid-template-columns: 40px 1fr; gap: 12px; } .phase-dot { width: 28px; height: 28px; font-size: 11px; } }
+
+  /* next steps */
+  .next-list { display: flex; flex-direction: column; gap: 10px; }
+  .next-item { display: flex; gap: 12px; align-items: flex-start; background: var(--paper-raised); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; }
+  .next-item .box { width: 16px; height: 16px; border: 1.5px solid var(--accent); border-radius: 4px; flex-shrink: 0; margin-top: 2px; }
+  .next-item span { font-size: 14.5px; color: var(--ink-soft); }
+  .next-item span b { color: var(--ink); font-weight: 600; }
+
+  footer { margin-top: 90px; padding-top: 22px; border-top: 1px solid var(--line); font-size: 13px; color: var(--ink-faint); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+</style>
+
+<div class="page">
+
+  <div class="eyebrow">Plan de arquitectura — proyecto Finmate — v2</div>
+  <h1>Agente financiero personal, paso a paso</h1>
+  <p class="subtitle">Plan de construcción para las cuatro funciones (noticias/datos económicos, portafolio, mercados, finanzas personales), la proactividad con memoria persistente, la personalidad configurable y el Centro de Control web, con recomendación técnica para cada decisión: la mejor opción sin mirar el costo, y una alternativa más económica.</p>
+  <div class="meta-row">
+    <span><b>Para:</b> Joaco</span>
+    <span><b>Fecha:</b> 24 agosto 2026</span>
+    <span><b>Estado:</b> planificación — sin cambios de código todavía</span>
+    <span><b>Reemplaza:</b> versión anterior del plan (spec preliminar)</span>
+  </div>
+
+  <div class="toc">
+    <div class="toc-title">En este documento</div>
+    <ol>
+      <li><a href="#s0"><span class="n">00</span>Resumen ejecutivo</a></li>
+      <li><a href="#s1"><span class="n">01</span>Decisiones técnicas: mejor opción vs. económica</a></li>
+      <li><a href="#s2"><span class="n">02</span>Modelo de datos ampliado</a></li>
+      <li><a href="#s3"><span class="n">03</span>La restricción de WhatsApp que hay que resolver</a></li>
+      <li><a href="#s4"><span class="n">04</span>Plan paso a paso por fases</a></li>
+      <li><a href="#s5"><span class="n">05</span>Riesgos y notas importantes</a></li>
+      <li><a href="#s6"><span class="n">06</span>Antes de tocar código</a></li>
+    </ol>
+  </div>
+
+  <!-- 00 Resumen -->
+  <section id="s0">
+    <div class="section-head"><span class="section-num">00</span><h2>Resumen ejecutivo</h2></div>
+    <div class="summary">
+      <p>Este plan incorpora el spec completo que definiste: Finmate pasa de agente conversacional básico a un <strong>asistente financiero proactivo, personalizable y con memoria persistente</strong>, con cuatro funciones (noticias/datos económicos, portafolio, mercados, finanzas personales), personalidad configurable, y un <strong>Centro de Control web</strong> para administrar todo sin tocar código.</p>
+      <p>Lo más importante que cambia respecto del plan anterior: el agente ya no solo <em>responde</em> — debe <strong>iniciar conversaciones</strong> dentro de horarios configurados por el usuario. Eso trae dos piezas nuevas que antes no eran necesarias: un <strong>scheduler proactivo</strong> consciente de horarios/timezone por usuario, y resolver una restricción real de WhatsApp Business sobre mensajes iniciados por el negocio (ver sección 3). También aparece la necesidad de un <strong>sitio web propio</strong> (Centro de Control), que hoy no existe en el proyecto.</p>
+      <p>Para cada decisión técnica se presenta la <strong>mejor opción sin considerar el costo</strong>, y una <strong>alternativa más económica</strong> — vas a ver ambas en tarjetas a lo largo de la sección 1, y el roadmap de la sección 4 las referencia por nombre en vez de repetirlas.</p>
+      <div class="decision-chips">
+        <span class="chip">Proactividad real (no solo responder)</span>
+        <span class="chip">Memoria persistente estructurada</span>
+        <span class="chip">Personalidad configurable</span>
+        <span class="chip">Centro de Control web nuevo</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 01 Decisiones -->
+  <section id="s1">
+    <div class="section-head"><span class="section-num">01</span><h2>Decisiones técnicas: mejor opción vs. económica</h2></div>
+    <p class="section-intro">Once decisiones agrupadas en cuatro áreas. La columna izquierda de cada tarjeta es la mejor opción ignorando el costo; la derecha, la alternativa más razonable si el costo importa.</p>
+
+    <div class="group-head">Grupo A — Inteligencia y memoria</div>
+
+    <div class="rec-card">
+      <div class="rec-head"><span class="num">01</span><h4>Modelo LLM que orquesta al agente</h4></div>
+      <div class="rec-options">
+        <div class="rec-option">
+          <span class="badge best">Mejor opción</span>
+          <div class="pick">Claude Opus en todas las tareas de razonamiento</div>
+          <div class="why">Mayor calidad de análisis financiero, mejor manejo de matices de personalidad y de contexto largo (historial + portafolio + noticias a la vez).</div>
+          <div class="cost">Costo por token más alto — sube con cada mensaje proactivo.</div>
+        </div>
+        <div class="rec-option">
+          <span class="badge budget">Alternativa económica</span>
+          <div class="pick">Enrutado por complejidad: Haiku por defecto, Sonnet solo para portafolio/económicos</div>
+          <div class="why">La mayoría de los mensajes (saludos, cotizaciones puntuales) no necesitan el modelo más caro. Se reserva el modelo grande para análisis de portafolio y datos económicos.</div>
+          <div class="cost">Reduce el gasto de forma significativa sin perder calidad donde más importa.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rec-card">
+      <div class="rec-head"><span class="num">02</span><h4>Base de datos y memoria estructurada</h4></div>
+      <div class="rec-options">
+        <div class="rec-option">
+          <span class="badge best">Mejor opción</span>
+          <div class="pick">Postgres gestionado de alta disponibilidad + Redis para caché/sesión</div>
+          <div class="why">Backups automáticos, réplicas, cero downtime en mantenimiento, y Redis acelera lecturas frecuentes (cotizaciones, watchlist) sin golpear la base principal.</div>
+          <div class="cost">Dos servicios gestionados en vez de uno.</div>
+        </div>
+        <div class="rec-option">
+          <span class="badge budget">Alternativa económica</span>
+          <div class="pick">Addon de Postgres de Railway (ya integrado al proyecto)</div>
+          <div class="why">Un solo proveedor, cero configuración adicional, pago por uso acorde al tamaño real de los datos. Suficiente para uso personal o de pocos usuarios.</div>
+          <div class="cost">Bajo, escala junto con lo que ya pagás en Railway.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rec-card">
+      <div class="rec-head"><span class="num">03</span><h4>Memoria semántica (recordar preferencias dichas en lenguaje libre)</h4></div>
+      <div class="rec-options">
+        <div class="rec-option">
+          <span class="badge best">Mejor opción</span>
+          <div class="pick">Vector DB dedicada (ej. Pinecone o Weaviate gestionado)</div>
+          <div class="why">Recall semántico robusto: si el usuario dijo "avisame si algo grande pasa con bancos regionales" hace tres semanas, lo encuentra aunque no use esas palabras exactas después.</div>
+          <div class="cost">Servicio adicional, cobra por volumen de vectores.</div>
+        </div>
+        <div class="rec-option">
+          <span class="badge budget">Alternativa económica</span>
+          <div class="pick">pgvector como extensión del mismo Postgres</div>
+          <div class="why">Mismo motor de base de datos que ya tenés, sin infraestructura nueva. A la escala de un usuario o pocos, el rendimiento es más que suficiente.</div>
+          <div class="cost">Gratis — es una extensión, no un servicio aparte.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="group-head">Grupo B — Datos financieros</div>
+
+    <div class="rec-card">
+      <div class="rec-head"><span class="num">04</span><h4>Cotizaciones (acciones, ETFs, bonos, commodities, cripto, FX)</h4></div>
+      <div class="rec-options">
+        <div class="rec-option">
+          <span class="badge best">Mejor opción</span>
+          <div class="pick">Polygon.io (plan premium multi-asset)</div>
+          <div class="why">Cobertura completa en un solo proveedor incluyendo bonos y opciones, baja latencia, datos de calidad institucional — evita mantener 3-4 integraciones distintas.</div>
+          <div class="cost">Plan pago mensual, escala con volumen de requests.</div>
+        </div>
+        <div class="rec-option">
+          <span class="badge budget">Alternativa económica</span>
+          <div class="pick">Finnhub + Alpha Vantage + CoinGecko (lo que ya usa el bot, + cripto)</div>
+          <div class="why">Cubre acciones, ETFs, FX y cripto en tiers gratuitos o casi gratuitos. Faltan bonos con buena cobertura, pero es un hueco menor si no es prioridad para el usuario.</div>
+          <div class="cost">Gratis a bajo volumen — mismas APIs que ya están configuradas en Railway.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rec-card">
+      <div class="rec-head"><span class="num">05</span><h4>Calendario económico (consenso + dato anterior)</h4></div>
+      <div class="rec-options">
+        <div class="rec-option">
+          <span class="badge best">Mejor opción</span>
+          <div class="pick">Trading Economics API</div>
+          <div class="why">Estándar de la industria: cobertura global de indicadores, siempre con consenso de mercado y dato anterior — exactamente lo que pide el spec para el pre-aviso.</div>
+          <div class="cost">Plan pago, sin tier gratuito útil para este caso.</div>
+        </div>
+        <div class="rec-option">
+          <span class="badge budget">Alternativa económica</span>
+          <div class="pick">Calendario curado a mano para ~10-15 indicadores clave (Fed, CPI, NFP, PIB, IPC Chile)</div>
+          <div class="why">Se arma una tabla propia con fechas conocidas de antemano (los bancos centrales publican calendarios oficiales gratis) y se actualiza el consenso manualmente o vía fuentes gratuitas cuando esté disponible.</div>
+          <div class="cost">Gratis, pero requiere mantenimiento manual y cobertura limitada a lo que el usuario más sigue.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rec-card">
+      <div class="rec-head"><span class="num">06</span><h4>Noticias financieras filtradas</h4></div>
+      <div class="rec-options">
+        <div class="rec-option">
+          <span class="badge best">Mejor opción</span>
+          <div class="pick">Benzinga News API</div>
+          <div class="why">Feed profesional con etiquetas por ticker/sector/país y sentiment ya calculado — el filtrado por preferencias del usuario es mucho más preciso que buscar palabras clave a mano.</div>
+          <div class="cost">Plan pago por volumen de requests.</div>
+        </div>
+        <div class="rec-option">
+          <span class="badge budget">Alternativa económica</span>
+          <div class="pick">Finnhub News (ya integrado) + filtrado por keywords con el LLM</div>
+          <div class="why">Se usa el feed gratuito que ya trae el bot, y se le pide al LLM que decida qué noticia es relevante para cada usuario según sus preferencias guardadas — menos preciso que un feed etiquetado, pero funcional.</div>
+          <div class="cost">Gratis a bajo volumen.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="group-head">Grupo C — Entrega proactiva</div>
+
+    <div class="rec-card">
+      <div class="rec-head"><span class="num">07</span><h4>Mensajería proactiva por WhatsApp</h4></div>
+      <div class="rec-options">
+        <div class="rec-option">
+          <span class="badge best">Mejor opción</span>
+          <div class="pick">Número de WhatsApp Business aprobado + plantillas pre-aprobadas por Meta</div>
+          <div class="why">Es la única forma confiable de que el agente "avise proactivamente" sin depender de que el usuario haya escrito en las últimas 24 horas — ver la restricción explicada en la sección 3.</div>
+          <div class="cost">Costo por conversación iniciada por el negocio, más el trámite de aprobación de plantillas.</div>
+        </div>
+        <div class="rec-option">
+          <span class="badge budget">Alternativa económica</span>
+          <div class="pick">Seguir con el número/sandbox actual, aceptando la limitación</div>
+          <div class="why">Sirve para desarrollo y para un uso personal donde el propio usuario reactiva la ventana de 24h escribiéndole al bot seguido — no cumple el requisito de proactividad total del spec, pero es gratis y ya está andando.</div>
+          <div class="cost">Gratis, pero es un parche, no una solución del requisito.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rec-card">
+      <div class="rec-head"><span class="num">08</span><h4>Motor de tareas proactivas (scheduler)</h4></div>
+      <div class="rec-options">
+        <div class="rec-option">
+          <span class="badge best">Mejor opción</span>
+          <div class="pick">Orquestador de workflows durable (Temporal.io o AWS EventBridge Scheduler)</div>
+          <div class="why">Resiliente a caídas del servidor, reintentos automáticos, y escala sin esfuerzo a muchos usuarios con horarios y timezones distintos.</div>
+          <div class="cost">Infraestructura adicional a operar (o costo gestionado en cloud).</div>
+        </div>
+        <div class="rec-option">
+          <span class="badge budget">Alternativa económica</span>
+          <div class="pick">APScheduler dentro del mismo proceso Flask (como ya existe en <code>main.py</code>)</div>
+          <div class="why">Cero infraestructura nueva. Funciona bien para pocos usuarios; el riesgo es perder triggers en memoria si el proceso se reinicia, y no escala bien más allá de un puñado de usuarios.</div>
+          <div class="cost">Gratis — ya está en el proyecto.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="group-head">Grupo D — Centro de Control</div>
+
+    <div class="rec-card">
+      <div class="rec-head"><span class="num">09</span><h4>Stack del sitio web (Centro de Control)</h4></div>
+      <div class="rec-options">
+        <div class="rec-option">
+          <span class="badge best">Mejor opción</span>
+          <div class="pick">Next.js (frontend) + FastAPI (backend dedicado), Vercel + Railway</div>
+          <div class="why">Mejor experiencia de usuario, tiempos de carga, y separación clara entre el panel y el agente — más fácil de escalar a varios usuarios reales en el futuro.</div>
+          <div class="cost">Dos servicios de hosting en vez de uno, más superficie a mantener.</div>
+        </div>
+        <div class="rec-option">
+          <span class="badge budget">Alternativa económica</span>
+          <div class="pick">Extender el Flask actual con rutas y formularios (Jinja2)</div>
+          <div class="why">Un solo servicio corriendo en Railway, sin infraestructura nueva. La interfaz es más simple, pero cubre exactamente los formularios que pide el spec.</div>
+          <div class="cost">Gratis — corre en el mismo servicio que ya está pago.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rec-card">
+      <div class="rec-head"><span class="num">10</span><h4>Autenticación del Centro de Control</h4></div>
+      <div class="rec-options">
+        <div class="rec-option">
+          <span class="badge best">Mejor opción</span>
+          <div class="pick">Proveedor gestionado (Auth0 o Clerk) con MFA</div>
+          <div class="why">Seguridad de nivel producción desde el día uno, gestión de sesiones y recuperación de cuenta resueltas sin mantenerlas vos mismo.</div>
+          <div class="cost">Plan pago pasado cierto número de usuarios activos.</div>
+        </div>
+        <div class="rec-option">
+          <span class="badge budget">Alternativa económica</span>
+          <div class="pick">Flask-Login con contraseña hasheada (bcrypt)</div>
+          <div class="why">Suficiente para uno o pocos usuarios de confianza. Sin MFA ni login social, pero cero costo y control total del código.</div>
+          <div class="cost">Gratis.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rec-card">
+      <div class="rec-head"><span class="num">11</span><h4>Infraestructura general / hosting</h4></div>
+      <div class="rec-options">
+        <div class="rec-option">
+          <span class="badge best">Mejor opción</span>
+          <div class="pick">Servicios separados por responsabilidad en cloud gestionado (AWS/GCP) con auto-scaling</div>
+          <div class="why">Cada pieza (agente, scheduler, DB, Centro de Control) escala de forma independiente y con alta disponibilidad real, multi-región si hiciera falta.</div>
+          <div class="cost">Más complejo de operar y más caro que un solo proveedor.</div>
+        </div>
+        <div class="rec-option">
+          <span class="badge budget">Alternativa económica</span>
+          <div class="pick">Todo en Railway, como hoy</div>
+          <div class="why">Un solo proveedor, un solo lugar donde mirar logs y variables de entorno, precio predecible y bajo para el volumen actual de un usuario.</div>
+          <div class="cost">Bajo — es la infraestructura que ya está pagada y funcionando.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 Modelo de datos -->
+  <section id="s2">
+    <div class="section-head"><span class="section-num">02</span><h2>Modelo de datos ampliado</h2></div>
+    <p class="section-intro">El spec agrega memoria para preferencias, horarios, personalidad y control de ruido — ninguna de estas tablas existe hoy en el proyecto.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Tabla</th><th>Función</th><th>Para qué</th><th>Columnas clave</th></tr></thead>
+        <tbody>
+          <tr><td class="tbl-name">users</td><td class="tbl-func">base</td><td>Identifica a cada usuario por su WhatsApp</td><td class="cols">phone, name, timezone, created_at</td></tr>
+          <tr><td class="tbl-name">personality_settings</td><td class="tbl-func">base</td><td>Cómo se comunica el agente con cada usuario</td><td class="cols">user_id, humor, sarcasmo, frec_chistes, nivel_conversador, tono</td></tr>
+          <tr><td class="tbl-name">notification_schedules</td><td class="tbl-func">base</td><td>Horarios y frecuencia autorizados para avisar</td><td class="cols">user_id, tipo_alerta, dias, hora_inicio, hora_fin</td></tr>
+          <tr><td class="tbl-name">conversation_history</td><td class="tbl-func">base</td><td>Memoria de corto plazo — WhatsApp es stateless por request</td><td class="cols">user_id, role, content, timestamp</td></tr>
+          <tr><td class="tbl-name">watchlist_items</td><td class="tbl-func">mercados</td><td>Índices/acciones/ETFs/cripto/FX seguidos por el usuario</td><td class="cols">user_id, symbol, asset_type, notify_open, notify_close</td></tr>
+          <tr><td class="tbl-name">portfolio_holdings</td><td class="tbl-func">portafolio</td><td>Posiciones del usuario</td><td class="cols">user_id, symbol, quantity, avg_price, purchase_date</td></tr>
+          <tr><td class="tbl-name">news_topics_followed</td><td class="tbl-func">noticias</td><td>Temas, empresas y países de interés</td><td class="cols">user_id, tipo, valor (empresa/país/tema)</td></tr>
+          <tr><td class="tbl-name">economic_indicators_followed</td><td class="tbl-func">económicos</td><td>Indicadores macro que le importan al usuario</td><td class="cols">user_id, indicator_code, country</td></tr>
+          <tr><td class="tbl-name">transactions</td><td class="tbl-func">finanzas</td><td>Gastos e ingresos registrados por chat</td><td class="cols">user_id, amount, category, date, description</td></tr>
+          <tr><td class="tbl-name">budget_categories</td><td class="tbl-func">finanzas</td><td>Categorías de gasto (set inicial + personalizadas)</td><td class="cols">user_id, name, is_default</td></tr>
+          <tr><td class="tbl-name">alerts_log</td><td class="tbl-func">proactividad</td><td>Evita alertas duplicadas / controla ruido</td><td class="cols">user_id, alert_type, ref_id, sent_at</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 03 Restricción WhatsApp -->
+  <section id="s3">
+    <div class="section-head"><span class="section-num">03</span><h2>La restricción de WhatsApp que hay que resolver</h2></div>
+    <p class="section-intro">Esto no es una decisión de costo, es una regla de la plataforma que condiciona todo el requisito de proactividad.</p>
+    <div class="callout">
+      <span class="icon">!</span>
+      <p><strong>WhatsApp Business solo permite texto libre dentro de una ventana de 24 horas</strong> desde el último mensaje del usuario. Un mensaje que el agente inicia por su cuenta — apertura de mercado, dato económico publicado, resumen semanal — fuera de esa ventana <strong>debe usar una plantilla pre-aprobada por Meta</strong>, no texto libre. Sin esto resuelto (decisión 07), la proactividad automática del spec simplemente no funciona más allá de la ventana de 24h.</p>
+    </div>
+    <p>Implica dos cosas concretas para el plan: (1) hay que registrar y aprobar plantillas para cada tipo de alerta proactiva antes de la Fase 2, y (2) la aprobación de Meta puede tardar días, así que conviene iniciar ese trámite en paralelo mientras se construyen las fases 0 y 1.</p>
+  </section>
+
+  <!-- 04 Roadmap -->
+  <section id="s4">
+    <div class="section-head"><span class="section-num">04</span><h2>Plan paso a paso por fases</h2></div>
+    <p class="section-intro">Nueve fases, cada una con un entregable probable de punta a punta antes de pasar a la siguiente.</p>
+
+    <div class="roadmap">
+      <div class="phase">
+        <div class="phase-marker"><div class="phase-dot">0</div><div class="phase-line"></div></div>
+        <div class="phase-card">
+          <span class="phase-tag">Cimientos</span>
+          <h4>Base de datos y orquestador</h4>
+          <p class="obj">Objetivo: tener el patrón agente-con-tools funcionando de punta a punta, aunque sea con una sola función.</p>
+          <ul class="phase-tasks">
+            <li><b>Elegir y provisionar</b> la base de datos (decisión 02) y crear las tablas base: <code class="mono">users</code>, <code class="mono">conversation_history</code>.</li>
+            <li><b>Elegir el modelo LLM</b> (decisión 01) y dar de alta la API key en Railway.</li>
+            <li><b>Reemplazar el router de comandos actual</b> por un orquestador con tool-calling, empezando solo con la tool de mercados (ya probada en producción).</li>
+            <li><b>Iniciar en paralelo</b> el trámite de plantillas de WhatsApp (sección 3) — tarda días en aprobarse.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-marker"><div class="phase-dot">1</div><div class="phase-line"></div></div>
+        <div class="phase-card">
+          <span class="phase-tag">Memoria y personalidad</span>
+          <h4>Historial + personalidad configurable</h4>
+          <p class="obj">Objetivo: el agente recuerda la conversación y habla con un estilo propio, sin tocar aún la calidad del análisis.</p>
+          <ul class="phase-tasks">
+            <li>Guardar y recuperar <code class="mono">conversation_history</code> en cada turno.</li>
+            <li>Crear <code class="mono">personality_settings</code> e inyectarlo dinámicamente en el system prompt (humor, sarcasmo, frecuencia de chistes, nivel conversador, tono).</li>
+            <li>Reforzar explícitamente en el system prompt que la personalidad <b>nunca</b> baja el rigor del análisis financiero.</li>
+            <li>Centro de Control — versión mínima: solo login + edición de perfil y personalidad (para no depender de editar la base a mano).</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-marker"><div class="phase-dot">2</div><div class="phase-line"></div></div>
+        <div class="phase-card">
+          <span class="phase-tag">Función 3</span>
+          <h4>Mercados y cotizaciones con contexto</h4>
+          <p class="obj">Objetivo: actualizaciones automáticas en apertura/cierre que explican el "por qué", no solo el número.</p>
+          <ul class="phase-tasks">
+            <li>Resolver mensajería proactiva de WhatsApp (decisión 07) — requisito duro antes de este punto.</li>
+            <li>Implementar el scheduler proactivo (decisión 08) consciente de timezone y horarios por usuario, con <code class="mono">watchlist_items</code>.</li>
+            <li>Tool que combina precio + variación + búsqueda de noticia relacionada para explicar el movimiento.</li>
+            <li>Alertas en apertura, cierre y horarios custom, respetando feriados de mercado.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-marker"><div class="phase-dot">3</div><div class="phase-line"></div></div>
+        <div class="phase-card">
+          <span class="phase-tag">Función 2</span>
+          <h4>Portafolio</h4>
+          <p class="obj">Objetivo: análisis siempre anclado a las posiciones reales del usuario, nunca genérico.</p>
+          <ul class="phase-tasks">
+            <li>Tools de alta/edición/baja de posiciones vía chat, con <code class="mono">portfolio_holdings</code>.</li>
+            <li>Cálculo de valor actual, rentabilidad absoluta y %, P&L por posición y total, distribución/exposición.</li>
+            <li>Cruzar posiciones con noticias relevantes y con riesgos/oportunidades — el LLM recibe el portafolio como contexto obligatorio en cada análisis.</li>
+            <li>Centro de Control: módulo de portafolio (alta/edición visual de posiciones).</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-marker"><div class="phase-dot">4</div><div class="phase-line"></div></div>
+        <div class="phase-card">
+          <span class="phase-tag">Función 1</span>
+          <h4>Noticias y datos económicos</h4>
+          <p class="obj">Objetivo: pre-aviso y post-publicación de datos económicos, resúmenes personalizados.</p>
+          <ul class="phase-tasks">
+            <li><code class="mono">news_topics_followed</code> y <code class="mono">economic_indicators_followed</code> + su edición en el Centro de Control.</li>
+            <li>Integrar calendario económico (decisión 05): pre-aviso con dato, fecha, dato anterior, consenso, relevancia y escenarios.</li>
+            <li>Post-publicación: resultado real, comparación con expectativa, interpretación e impacto en activos relevantes.</li>
+            <li>Resúmenes diarios/semanales personalizados; cada alerta queda abierta a preguntas de seguimiento (ya lo resuelve la memoria conversacional de la Fase 1).</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-marker"><div class="phase-dot">5</div><div class="phase-line"></div></div>
+        <div class="phase-card">
+          <span class="phase-tag">Función 4</span>
+          <h4>Finanzas personales y presupuesto</h4>
+          <p class="obj">Objetivo: registrar gastos hablando normal, y ver el mes de un vistazo cuando se pregunte.</p>
+          <ul class="phase-tasks">
+            <li>Extracción estructurada de gasto (monto, fecha, descripción, categoría) desde lenguaje natural, guardado en <code class="mono">transactions</code>.</li>
+            <li>Set inicial de <code class="mono">budget_categories</code> (propuesta: Vivienda, Alimentación, Transporte, Ocio, Salud, Educación, Otros) — ajustable desde el Centro de Control.</li>
+            <li>Resumen mensual automático: total, por categoría, distribución %, principales fuentes, comparación con meses anteriores.</li>
+            <li>Consulta on-demand del gasto acumulado durante el mes en curso.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-marker"><div class="phase-dot">6</div><div class="phase-line"></div></div>
+        <div class="phase-card">
+          <span class="phase-tag">Calidad de la proactividad</span>
+          <h4>Control de ruido</h4>
+          <p class="obj">Objetivo: que el agente avise lo importante, no todo.</p>
+          <ul class="phase-tasks">
+            <li><code class="mono">alerts_log</code> para no repetir la misma alerta dos veces.</li>
+            <li>Umbral de materialidad configurable (ej. no avisar variaciones menores a X% salvo pedido explícito).</li>
+            <li>Cruzar frecuencia de alertas con <code class="mono">notification_schedules</code> y con "qué tan conversador" pidió ser el usuario.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-marker"><div class="phase-dot">7</div><div class="phase-line"></div></div>
+        <div class="phase-card">
+          <span class="phase-tag">Centro de Control</span>
+          <h4>Panel completo</h4>
+          <p class="obj">Objetivo: administrar todo el agente sin tocar la base de datos a mano.</p>
+          <ul class="phase-tasks">
+            <li>Confirmar stack (decisión 09) y autenticación (decisión 10) si no se hizo ya en la Fase 1.</li>
+            <li>Módulos: perfil, personalidad, horarios, noticias, indicadores económicos, mercados seguidos, portafolio, finanzas personales, preferencias de reportes.</li>
+            <li>Asegurar que cada cambio en el panel se refleje de inmediato en lo que usa el agente — misma base de datos, sin caches desincronizados.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-marker"><div class="phase-dot">8</div></div>
+        <div class="phase-card">
+          <span class="phase-tag">Cierre</span>
+          <h4>Hardening y uso real</h4>
+          <p class="obj">Objetivo: que aguante el uso diario sin sorpresas.</p>
+          <ul class="phase-tasks">
+            <li>Manejo de errores robusto, reintentos, logging/observabilidad de los envíos proactivos.</li>
+            <li>Aislamiento de datos por usuario y manejo seguro de secrets (API keys, tokens).</li>
+            <li>Confirmar decisión de hosting general (decisión 11) según cómo escaló el uso real.</li>
+            <li>Semana de prueba con uso real y ajuste fino de prompts, umbrales de alerta y plantillas de WhatsApp.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 Riesgos -->
+  <section id="s5">
+    <div class="section-head"><span class="section-num">05</span><h2>Riesgos y notas importantes</h2></div>
+    <div class="decision-chips" style="margin-top:0">
+      <span class="chip">Aprobación de plantillas Meta: días, no minutos</span>
+      <span class="chip">Costo de LLM sube con más proactividad</span>
+      <span class="chip">Licencias de datos económicos/noticias — revisar ToS</span>
+      <span class="chip">Categorías de gasto: propuesta inicial, no definitiva</span>
+    </div>
+    <p style="margin-top:20px">El punto de mayor riesgo del spec no es técnico sino de plataforma: si no se resuelve la decisión 07 (mensajería proactiva), buena parte de "el agente debe actuar de forma proactiva" simplemente no es posible tal como está planteado, más allá de qué tan bien esté construido el resto. Por eso el trámite de plantillas arranca en la Fase 0, en paralelo, y no se deja para el final.</p>
+  </section>
+
+  <!-- 06 Próximos pasos -->
+  <section id="s6">
+    <div class="section-head"><span class="section-num">06</span><h2>Antes de tocar código</h2></div>
+    <div class="next-list">
+      <div class="next-item"><div class="box"></div><span><b>Elegir, para cada una de las 11 decisiones,</b> si vas con la mejor opción, la económica, o una mezcla — no hace falta decidir todo hoy, pero sí antes de la fase que la necesita.</span></div>
+      <div class="next-item"><div class="box"></div><span><b>Iniciar el trámite de WhatsApp Business + plantillas</b> cuanto antes, por el tiempo de aprobación de Meta.</span></div>
+      <div class="next-item"><div class="box"></div><span><b>Confirmar el set inicial de categorías de presupuesto</b> propuesto en la Fase 5, o traer tu propia lista.</span></div>
+      <div class="next-item"><div class="box"></div><span><b>Dar luz verde a la Fase 0</b> para arrancar con la base de datos y el orquestador.</span></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Finmate — documento de planificación, vivo</span>
+    <span>v2 — incorpora el spec completo del agente proactivo</span>
+  </footer>
+
+</div>
+
+</body></html>
